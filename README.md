@@ -1,25 +1,21 @@
-✨ 推荐和分类
-使用教程
-步骤1：启动功能
-命令面板：
-（1）在VSCode中按下 Ctrl+Shift+P
-输入命令：
-4399-on-vscode.recommended（推荐）
-4399-on-vscode.category（分类）
-或鼠标点击推荐或分类
+Recommendations and Categories: User Guide
+Step 1: Launch the Function
+Command Palette:
+（1）In VSCode, press “Ctrl+Shift+P” and enter the command:  
+4399-on-vscode.recommended (for recommendations)  
+4399-on-vscode.category(for categories)  
+Alternatively, click on "Recommendations" or "Categories" with your mouse.
 
-步骤2：推荐功能界面
-界面元素：
-列表形式展示推荐游戏名称（如《黄金矿工》《赛尔号》等）
-操作：
-键盘上下键选择游戏 → 按回车启动或鼠标点击
+Step 2: Recommendations Interface**
+Interface Elements:  
+Display recommended game titles in a list format (e.g., "Gold Miner," "Sai'er Number," etc.)  
+Operations:  
+Use the up and down arrow keys to select a game → Press Enter to launch or click with the mouse.
 
-步骤3：分类功能界面
-（1）一级界面（分类选择）：
-显示所有分类（如动作、射击、休闲等）
-（2）二级界面（游戏列表）：
-选择分类后展示该类型下的游戏（如选择"动作"显示《拳皇》《火柴人》等）
-操作：
-选择分类 → 选择游戏 → 自动加载
-
-<!-- by 戴颖颖 -->
+Step 3: Categories Interface
+(1) Primary Interface (Category Selection):  
+Display all categories (e.g., Action, Shooting, Casual, etc.)  
+(2) Secondary Interface (Game List):  
+After selecting a category, display the games under that category (e.g., selecting "Action" shows "The King of Fighters," "Stickman," etc.)  
+Operations:  
+Select a category → Select a game → Automatically load.
