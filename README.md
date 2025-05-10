@@ -1,44 +1,72 @@
 #by 戴颖颖
-Feature Highlights:
+Functional Features:
 1.Game Launching
-(1) Supports Flash and H5 games.
-(2) Provides multiple functions such as game search, categorization, and recommendation.
+(1) Multi-platform Support: Compatible with Flash and HTML5 games.
+(2) Functional Integration: Integrated search, categorization, and recommendation functions.
 2.User Interaction
-(1) View and like comments, with the ability to reply.
-(2) Records game history.
+(1) Comment System: Supports viewing, liking, and replying to comments.
+(2) History Record: Automatically records game history.
 3.Community Interaction
-(1) Browse forum posts and view post details.
-(2) Join or leave groups, with support for group check-ins.
+(1) Forum Browsing: Supports browsing posts and viewing details.
+(2) Group Management: Supports joining/leaving groups and group check-ins.
 4.Personalization Settings
-(1) Multiple configuration options, with support for custom scripts.
-(2) Customizable themes and styles.
-5.Convenient Features
-(1) One-click game launch, with browser integration support.
-(2) Automatic check-in feature.
+(1) Custom Configuration: Supports custom scripts.
+(2) Theme Customization: Supports custom themes and styles.
+5.Convenience Functions
+(1) One-click Launch: Supports browser integration.
+(2) Automatic Check-in: Provides an automatic check-in function.
 6.Security
-(1) Encrypted data storage and content filtering.
+(1) Data Encryption: Supports content filtering.
 7.Extensibility
-(1) Supports plugin mechanism, with a rich API provided.
+(1) Plugins and API: Supports a plugin mechanism and provides a rich API.
 
 #by 戴颖颖
-Recommendations and Categorization
-Usage Guide:
-Step 1: Launch the Feature
-Command Palette:
-(1) Press `Ctrl+Shift+P` in VSCode.
+Recommendation and Categorization
+Usage Tutorial:
+Step 1: Launch the Function
+Command Panel:
+(1) Press "Ctrl+Shift+P" in VSCode.
 (2) Enter the command:
-`4399-on-vscode.recommended` (for recommendations)
-`4399-on-vscode.category` (for categorization)
- or click on recommendations or categorization with the mouse.
-Step 2: Recommendation Feature Interface**
+'4399-on-vscode.recommended '(Recommendation)
+'4399-on-vscode.category '(Categorization)
+Or click on Recommendation or Categorization with the mouse.
+Step 2: Recommendation Function Interface
 (1) Interface Elements:
- Games are displayed in a list format (e.g., "Gold Miner," "Saerhao," etc.).
-(2) Operations:
-Use the up and down arrow keys to select a game → press Enter to launch or click with the mouse.
-Step 3: Categorization Feature Interface**
+ Display recommended game names in list form (e.g., "Gold Miner," "Sai'er No.").
+// Code Implementation: Parse recommended games from the 4399 homepage
+        $("a[href*='/flash/'][href*='.htm']").has("img").each((i, elem) => {
+            let gameName = $(elem).text().replaceAll(/ |\n/g, "");
+            let href = $(elem).attr("href")?.replaceAll(/ |\n/g, "");
+            if(gameName && href) games[gameName] = href;
+        });
+(2) Operation:
+ Use the up and down arrow keys to select a game → Press Enter to launch or click with the mouse.
+// Code Implementation: Display the selection interface and handle the selection
+        const val = await vscode.window.showQuickPick(gameNames);
+        if(val) play(games[val]);
+Step 3: Categorization Function Interface
 (1) Primary Interface (Category Selection):
-Displays all categories (e.g., action, shooting, casual, etc.).
+Display all categories (e.g., Action, Shooting, Casual).
+// Code Implementation: Parse game categories
+        $("a[href*='/flash_fl/'][href*='.htm'], a[href*='/special/'][href*='.htm']").each((i, elem) => {
+            let categoryName = $(elem).text().replaceAll(/ |\n/g, "");
+            let href = $(elem).attr("href")?.replaceAll(/ |\n/g, "");
+            if(categoryName && href) categories[categoryName] = href;
+        });
 (2) Secondary Interface (Game List):
-After selecting a category, it shows the games under that type (e.g., selecting "action" displays "The King of Fighters," "Matchstick Man," etc.).
-(3) Operations:
-Select category → Select game → Automatically load.
+After selecting a category, display the games under that category (e.g., selecting "Action" shows "The King of Fighters," "Stickman," etc.).
+// Code Implementation: Retrieve games under a category
+        $("a[href*='/flash/'][href*='.htm']:has(img)").each((i, elem) => {
+            let gameName = $(elem).children("img").attr("alt");
+            let href = $(elem).attr("href");
+            if(gameName && href) games[gameName] = href;
+        });
+(3) Operation:
+Select a category → Select a game → Automatic loading.
+// Code Implementation: Hierarchical selection processing
+        let category = await vscode.window.showQuickPick(categoryNames);
+        if(category) {
+            let games = await getGamesByCategory(categories[category]);
+            let gameName = await vscode.window.showQuickPick(Object.keys(games));
+            if(gameName) play(games[gameName]);
+        }
