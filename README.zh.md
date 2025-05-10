@@ -25,8 +25,8 @@
 使用教程
 步骤 1：启动功能
 命令面板：
-1. 在 VSCode 中按下 `Ctrl+Shift+P`。
-2. 输入命令：
+(1).在 VSCode 中按下 `Ctrl+Shift+P`。
+(2).输入命令：
     ```plaintext
     4399-on-vscode.recommended（推荐）
     4399-on-vscode.category（分类）
