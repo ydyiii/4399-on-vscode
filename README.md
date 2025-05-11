@@ -65,3 +65,43 @@ Change the value of the default field to your desired custom title. For example:
     "default": "摸鱼必备"
 }
 ```
+
+
+
+by何洁芳
+Random Game Feature Overview
+The "Random Game" feature provides users with an experience to randomly select a game from the 4399 gaming platform. Since game links are generated via a randomized algorithm, there may be cases where the selected link corresponds to a game that no longer exists or is inaccessible.
+
+Usage Instructions
+Step 1: Launch VSCode
+Open the Visual Studio Code editor.
+
+Step 2: Trigger the Command
+Press Ctrl + Shift + P (Windows/Linux) or Cmd + Shift + P (Mac) to open the Command Palette.
+
+Step 3: Select Random Game
+In the Command Palette, type 4399-on-vscode.random, then press Enter to activate the random game feature.
+
+Core Code
+The core logic for the random game feature is located in the file 4399-on-vscode/src/extension.ts:
+```
+typescript
+random: () => {  
+    // Invokes the play function with a randomly generated game URL  
+    play(  
+        // Constructs the target URL:  
+        // Base path for 4399 Flash game pages  
+        "https://www.4399.com/flash/" +  
+
+        // Generates a random integer between 200,000 and 209,999:  
+        // 1. Math.random() produces a float between 0 (inclusive) and 1 (exclusive)  
+        // 2. Multiply by 10,000 to get a range of 0 ~ 9,999.999...  
+        // 3. Math.floor() truncates to an integer (0 ~ 9,999)  
+        // 4. Add 200,000 to shift the range to 200,000 ~ 209,999  
+        (Math.floor(Math.random() * 10000) + 200000) +  
+
+        // Appends the .htm extension to form the complete URL  
+        ".htm"  
+    );  
+},  
+```
