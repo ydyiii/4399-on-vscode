@@ -633,3 +633,80 @@ User Input → searchGames() → Triggers suggest() (Autocomplete) OR searchByKw
                 └─→ searchByKwd() → Calls API_URLS.result → Parses HTML → Generates Result List
                                       │
                                       └─→ User Clicks "Next Page" → searchPage++ → Re-invokes searchByKwd()
+
+<!-- by 赵文佳 -->
+(3) Search Module Usage Tutorial
+1. Plugin Installation
+Method 1: Install via VSCode Extension Marketplace
+
+Open VSCode and click the Extensions icon in the left sidebar (or press Ctrl+Shift+X).
+
+Search for 4399 on VSCode, locate the extension, and click Install.
+
+After installation, click Reload to restart VSCode and activate the plugin.
+
+Method 2: Manual Installation
+
+Download the .vsix file from the GitHub repository:
+''''
+bash
+git clone https://github.com/dsy4567/4399-on-vscode.git  
+cd 4399-on-vscode  
+vsce package  
+''''
+In VSCode, open the Extensions panel, click the menu icon (⋮) in the top-right corner, select Install from VSIX, and choose the generated .vsix file.
+
+2. Launching the Search Feature
+Open the command palette by pressing Ctrl+Shift+P.
+
+Type the command 4399: Search Games and press Enter.
+
+A QuickPick input box titled 4399 on VSCode: Search will appear.
+
+3. Basic Operations
+（1） Keyword-Based Search
+Input Game Name: Type a game name (e.g., Gold Miner) in the input box.
+
+Direct Search: Press Enter to invoke the search API and display results.
+
+Real-time Suggestions: Autocomplete suggestions (e.g., Gold Miner 2P) appear during typing. Click a suggestion to directly navigate to the game.
+
+（2） Browsing Search Results
+Results are displayed as a list containing Game Name and Game ID (e.g., Game ID: 12345).
+
+Click a Game Name:
+
+The plugin invokes the play function to open the game in an embedded browser.
+
+The input box closes, and the last search keyword is cached in globalStorage.
+
+（3） Pagination
+A Next Page button appears at the list bottom.
+
+Clicking it loads more results. The current page index is shown in the button description (e.g., Page 1).
+
+After pagination, the input box title updates to Search Results for [Keyword] (Page N).
+
+（4）Return to Suggestions
+In the search results interface, click the Back Button (←) to switch back to the suggestion mode. This clears results and displays autocomplete suggestions.
+
+4. Advanced Features
+（1） Historical Search Persistence
+The last successful search keyword is automatically saved via globalStorage.
+
+Upon reopening the search interface, the input box auto-populates this keyword.
+
+（2）Error Handling
+Network Errors: If a search request fails, the plugin displays an error message in the VSCode notification panel (e.g., Failed to fetch search page: Timeout).
+
+Key Technical Terms:
+QuickPick: VSCode’s interactive dropdown input component.
+
+Embedded Browser: An in-editor webview for rendering game content.
+
+globalStorage: VSCode’s API for persistent key-value data storage.
+
+Debounced API Calls: Rate-limited requests to reduce server load.
+
+Pagination State: Tracks page index and result visibility.
+
