@@ -1,8 +1,3 @@
-
-
-
-
-
 #by 唐莺莺
 项目介绍：
 
@@ -594,4 +589,12 @@ try...catch 块包裹网络请求。
 
 err("无法获取搜索页: ", e) 和 log("成功获取到4399搜索页面") 调用。
 
-
+<!-- by 赵文佳 -->
+（二）搜索功能模块协作流程图
+用户输入 → searchGames() → 触发 suggest()（联想词）或 searchByKwd()（直接搜索）
+                │
+                ├─→ suggest() → 调用 API_URLS.suggestion → 解析建议词 → 填充 QuickPick
+                │
+                └─→ searchByKwd() → 调用 API_URLS.result → 解析 HTML → 生成结果列表
+                                      │
+                                      └─→ 用户点击“下一页” → searchPage++ → 重新调用 searchByKwd()

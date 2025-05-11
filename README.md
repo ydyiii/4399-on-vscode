@@ -573,3 +573,63 @@ if(category) {
     if(gameName) play(games[gameName]);
 }
 ```
+
+<!-- by 赵文佳 -->
+(1) Core Functional Modules of Search Game
+1. Game Search Entry (searchGames)
+Description:
+Initializes the search interaction interface (VSCode QuickPick), receives user-input keywords, and triggers search suggestions or direct search execution. Supports default keyword pre-fill, UI state management (e.g., pagination button display), and user action monitoring.
+Code Location:
+async function searchGames(s: string)
+
+2. Search Execution (searchByKwd)
+Description:
+Invokes the 4399 search API using keywords, parses the returned HTML page to extract game names, IDs, and other metadata, and generates actionable QuickPick list items (including a "Next Page" pagination feature).
+Code Location:
+async function searchByKwd(s: string)
+
+3. Autocomplete Suggestions (suggest)
+Description:
+Provides real-time search autocomplete suggestions via a debounce mechanism (1-second delay). Calls the 4399 suggestion API, parses JSON responses, and displays suggestions. User selection of a suggestion triggers direct navigation to the corresponding game.
+Code Location:
+async function suggest(kwd: string)
+
+4. API Endpoint Management (API_URLS)
+Description:
+Defines URL templates for 4399 search-related APIs:
+
+Search result pagination (result): Supports dynamic keywords and page numbers.
+
+Search suggestion (suggestion): Supports dynamic keywords.
+Code Location:
+const API_URLS constant.
+
+5. Pagination & UI State Management
+Description:
+Manages pagination state (searchPage), search input history (searchValue), and UI state flags (e.g., whether results are displayed).
+Key Code Locations:
+
+searchPage: number: Current page index.
+
+showingSearchResult: boolean: Flag for active results display.
+
+searchValue: string: Cached user input keywords.
+
+6. Error Handling & Logging
+Description:
+Captures exceptions from network requests and data parsing. Uses err() for error reporting and log() for debug logging to ensure search robustness.
+Code Locations:
+
+try...catch blocks wrapping network requests.
+
+err("Failed to fetch search page: ", e) and log("4399 search page fetched successfully") calls.
+
+<!-- by 赵文佳 -->
+(2) Search Module Collaboration Flowchart
+User Input → searchGames() → Triggers suggest() (Autocomplete) OR searchByKwd() (Direct Search)
+                │
+                ├─→ suggest() → Calls API_URLS.suggestion → Parses Suggestions → Populates QuickPick
+                │
+                └─→ searchByKwd() → Calls API_URLS.result → Parses HTML → Generates Result List
+                                      │
+                                      └─→ User Clicks "Next Page" → searchPage++ → Re-invokes searchByKwd()
