@@ -1,4 +1,8 @@
 
+
+
+
+
 #by 唐莺莺
 项目介绍：
 
@@ -538,4 +542,56 @@ if(category) {
     if(gameName) play(games[gameName]);
 }
 ```
+
+<!-- by 赵文佳 -->
+（一）搜索游戏的核心功能模块的简单介绍以及代码定位
+
+1.  游戏搜索入口（searchGames）
+
+游戏搜索入口简介:初始化搜索交互界面（VSCode QuickPick），接收用户输入的关键词，触发搜索建议或直接执行搜索。支持默认搜索词填充、界面状态管理（如分页按钮显示）和用户操作监听。
+
+代码定位: async function searchGames(s: string)
+
+2. 执行搜索（searchByKwd）
+
+简介:根据关键词调用 4399 搜索接口，解析返回的 HTML 页面，提取游戏名称、ID 等信息，并生成可操作的 QuickPick 列表项（含“下一页”分页功能）。
+
+代码定位: async function searchByKwd(s: string)
+
+
+3. 联想词建议（suggest）
+
+简介:提供实时搜索联想词功能，通过防抖机制（延迟 1 秒）调用 4399 建议接口，解析 JSON 数据并展示建议列表。用户选择建议词可直接跳转至对应游戏。
+
+代码定位: async function suggest(kwd: string)
+
+4.  API 地址管理（API_URLS）
+
+简介:定义 4399 搜索相关接口的 URL 模板，包括：搜索结果分页接口（result）：支持动态关键词和页码；搜索建议接口（suggestion）：支持动态关键词。
+
+代码定位: const API_URLS 常量。
+
+
+5. 分页与界面状态管理
+
+简介:管理当前搜索的页码（searchPage）、搜索输入框历史值（searchValue）及界面状态（如是否正在展示结果）。
+
+关键代码定位:
+
+searchPage: number：记录当前页码。
+
+showingSearchResult: boolean：标记是否正在展示搜索结果。
+
+searchValue: string：保存用户输入的搜索词。
+
+6. 异常捕获与日志记录
+
+简介:捕获网络请求、数据解析等异常，通过 err 函数输出错误信息，并通过 log 记录调试信息，保障搜索流程的健壮性。
+
+代码定位:
+
+try...catch 块包裹网络请求。
+
+err("无法获取搜索页: ", e) 和 log("成功获取到4399搜索页面") 调用。
+
 
