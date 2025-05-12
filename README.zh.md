@@ -126,23 +126,19 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(disposable);
 }
-2. 代码解析
 
+2. 代码解析
 （1）. 功能入口
-TypeScript
-复制
-/** 输入游戏 ID (链接以 http(s)://www.4399.com/flash/ 开头) */ get: () => {
+输入游戏 ID (链接以 http(s)://www.4399.com/flash/ 开头) */ get: () => {
 这是一个名为get的函数，用于处理用户手动输入游戏ID的操作，专门针对以http(s)://www.4399.com/flash/开头的游戏链接。
 它是commands对象中的一个属性，通过vscode.commands.registerCommand注册为一个VSCode命令，用户可以在VSCode中通过命令面板调用该功能。
+
 （2）. 获取历史输入值
-TypeScript
-复制
 let i = globalStorage(ctx).get("id1");
 从全局存储中获取键为id1的值，该值存储了用户上次输入的游戏ID。
 如果用户之前使用过该功能并输入过游戏ID，这里会获取到上次输入的值，以便在输入框中为用户提供一个默认值，方便用户快速操作。
+
 （3）. 弹出输入框
-TypeScript
-复制
 vscode.window
     .showInputBox({
         value: i ? String(i) : "222735",
@@ -150,13 +146,12 @@ vscode.window
         prompt: "输入游戏链接或 http(s)://www.4399.com/flash/ 后面的数字(游戏 ID)",
     })
 调用vscode.window.showInputBox方法弹出一个输入框，让用户可以手动输入游戏ID。
-输入框的配置如下：
+
+（4）输入框的配置如下：
 value：输入框的初始值。如果从全局存储中获取到了历史输入值i，则将其作为初始值；否则，默认值为"222735"。
 title：输入框的标题，显示为"4399 on VSCode: 输入游戏 ID"，明确告知用户当前操作的功能。
 prompt：输入框的提示信息，告诉用户可以输入游戏链接，或者输入http(s)://www.4399.com/flash/后面的数字（游戏ID），为用户提供明确的输入指引。
-（4）. 处理用户输入
-TypeScript
-复制
+（5）. 处理用户输入
 .then(id => {
     if (id) {
         log("用户输入 ", id);
@@ -171,18 +166,16 @@ TypeScript
 调用log函数记录用户输入的内容，方便开发者进行调试和跟踪用户的操作。
 将用户输入的游戏ID存储到全局存储中，键为id1，以便下次用户使用该功能时可以获取到上次输入的值。
 调用play函数，将用户输入的游戏ID拼接到基础的游戏链接https://www.4399.com/flash/后面，并加上.htm后缀，形成完整的游戏链接，然后通过play函数启动游戏。
-（5）. 游戏ID解析
-TypeScript
-复制
+
+（6）. 游戏ID解析
 play(
     "<url id="d0gqdfms1rhbjs7jdigg" type="url" status="parsed" title="最新小游戏,最新网页游戏,最新单机小游戏,2016最新热门小游戏大全" wc="1423">https://www.4399.com/flash/</url> " + parseId(id) + ".htm"
 );
 在拼接游戏链接时，调用了parseId函数对用户输入的id进行解析。
 parseId函数的作用可能是对用户输入的内容进行处理，提取出符合要求的游戏ID部分。例如，用户可能输入的是一个完整的游戏链接，parseId函数可以从链接中解析出游戏ID，或者对输入的ID进行格式化等操作，确保最终拼接的游戏链接是正确的。
-（6）. 类似的H5游戏ID输入功能
-TypeScript
-复制
-/** 输入游戏 ID (链接以 http(s)://www.zxwyouxi.com/g/ 开头) */ "get-h5-web-game":
+
+（7）. 类似的H5游戏ID输入功能
+输入游戏 ID (链接以 http(s)://www.zxwyouxi.com/g/ 开头) */ "get-h5-web-game":
     () => {
         let i = globalStorage(ctx).get("id2");
         vscode.window
@@ -217,10 +210,89 @@ TypeScript
 
 五. 扩展功能
 手动输入游戏ID功能的相关扩展功能：
-快速定位特定游戏：用户可以通过手动输入游戏ID，快速定位到4399平台上的特定游戏，无需在众多游戏列表中逐一查找，节省时间，提高效率。
-1.结合其他功能增强体验：
+1.快速定位特定游戏：用户可以通过手动输入游戏ID，快速定位到4399平台上的特定游戏，无需在众多游戏列表中逐一查找，节省时间，提高效率。
+
+// 快速定位特定游戏
+function playGame(gameId: string) {
+    const gameUrl = `<url id="d0grh35kfv3sjf0b1beg" type="url" status="parsed" title="最新小游戏,最新网页游戏,最新单机小游戏,2016最新热门小游戏大全" wc="1423">https://www.4399.com/flash/</url> ${gameId}.htm`;
+    vscode.window.showInformationMessage(`正在启动游戏: ${gameUrl}`);
+    // 实际游戏加载逻辑...
+}
+
+2.结合其他功能增强体验：
 与历史记录功能结合：输入游戏ID后，该游戏会被添加到历史记录中，方便用户后续快速访问曾经玩过的游戏。
-2.搭配自定义HTML代码片段：用户可以为特定游戏注入自定义HTML代码片段，优化游戏体验或实现一些特殊功能。例如，调整游戏界面布局以更好地适配VSCode窗口。
-3.支持多类型游戏：手动输入游戏ID功能不仅适用于H5页游和H5小游戏，还支持部分Flash小游戏（借助Ruffle模拟器），满足用户对不同类型游戏的需求。
-4.辅助账号登录与管理：在输入游戏ID后，用户可以结合登录账号功能，快速切换到自己的4399账号，继续之前的游戏进度或体验账号内的游戏内容。
-6.助力游戏开发与测试：对于开发者来说，手动输入游戏ID功能可以帮助他们快速定位到自己正在开发或测试的游戏，便于进行代码调试、性能分析等操作，提升开发效率
+
+// 历史记录功能
+function addToHistory(gameId: string) {
+    let history = globalStorage(ctx).get("history") || [];
+    if (!history.includes(gameId)) {
+        history.push(gameId);
+        globalStorage(ctx).set("history", history);
+    }
+}
+
+// 在playGame函数中调用addToHistory
+function playGame(gameId: string) {
+    const gameUrl = `<url id="d0grh35kfv3sjf0b1beg" type="url" status="parsed" title="最新小游戏,最新网页游戏,最新单机小游戏,2016最新热门小游戏大全" wc="1423">https://www.4399.com/flash/</url> ${gameId}.htm`;
+    vscode.window.showInformationMessage(`正在启动游戏: ${gameUrl}`);
+    // 实际游戏加载逻辑...
+    addToHistory(gameId);
+}
+
+3.搭配自定义HTML代码片段：用户可以为特定游戏注入自定义HTML代码片段，优化游戏体验或实现一些特殊功能。例如，调整游戏界面布局以更好地适配VSCode窗口。
+
+// 自定义HTML代码片段功能
+function injectCustomHtml(gameId: string, customHtml: string) {
+    const gameUrl = `<url id="d0grh35kfv3sjf0b1beg" type="url" status="parsed" title="最新小游戏,最新网页游戏,最新单机小游戏,2016最新热门小游戏大全" wc="1423">https://www.4399.com/flash/</url> ${gameId}.htm`;
+    vscode.window.showInformationMessage(`正在启动游戏: ${gameUrl}`);
+    // 实际游戏加载逻辑...
+    // 注入自定义HTML代码
+    vscode.window.showInformationMessage(`注入自定义HTML代码: ${customHtml}`);
+}
+
+// 在playGame函数中调用injectCustomHtml
+function playGame(gameId: string) {
+    const customHtml = globalStorage(ctx).get("customHtml") || "";
+    injectCustomHtml(gameId, customHtml);
+}
+
+4.支持多类型游戏：手动输入游戏ID功能不仅适用于H5页游和H5小游戏，还支持部分Flash小游戏（借助Ruffle模拟器），满足用户对不同类型游戏的需求。
+
+// H5页游和H5小游戏
+function playH5Game(gameId: string) {
+    const gameUrl = `<url id="d0grh35kfv3sjf0b1bfg" type="url" status="waiting" title="" wc="0">https://www.zxwyouxi.com/g/</url> ${gameId}`;
+    vscode.window.showInformationMessage(`正在启动H5游戏: ${gameUrl}`);
+    // 实际游戏加载逻辑...
+}
+
+5.辅助账号登录与管理：在输入游戏ID后，用户可以结合登录账号功能，快速切换到自己的4399账号，继续之前的游戏进度或体验账号内的游戏内容。
+
+// Flash小游戏
+function playFlashGame(gameId: string) {
+    const gameUrl = `<url id="d0grh35kfv3sjf0b1beg" type="url" status="parsed" title="最新小游戏,最新网页游戏,最新单机小游戏,2016最新热门小游戏大全" wc="1423">https://www.4399.com/flash/</url> ${gameId}.htm`;
+    vscode.window.showInformationMessage(`正在启动Flash游戏: ${gameUrl}`);
+    // 实际游戏加载逻辑...
+    // 使用Ruffle模拟器
+    vscode.window.showInformationMessage(`使用Ruffle模拟器加载Flash游戏`);
+}
+
+6.助力游戏开发与测试：对于开发者来说，手动输入游戏ID功能可以帮助他们快速定位到自己正在开发或测试的游戏，便于进行代码调试、性能分析等操作，提升开发效率。
+
+// 助力游戏开发与测试
+function debugGame(gameId: string) {
+    const gameUrl = `<url id="d0grh35kfv3sjf0b1beg" type="url" status="parsed" title="最新小游戏,最新网页游戏,最新单机小游戏,2016最新热门小游戏大全" wc="1423">https://www.4399.com/flash/</url> ${gameId}.htm`;
+    vscode.window.showInformationMessage(`正在调试游戏: ${gameUrl}`);
+    // 实际游戏调试逻辑...
+}
+
+// 在playGame函数中调用debugGame
+function playGame(gameId: string) {
+    const isDebugMode = globalStorage(ctx).get("isDebugMode") || false;
+    if (isDebugMode) {
+        debugGame(gameId);
+    } else {
+        const gameUrl = `<url id="d0grh35kfv3sjf0b1beg" type="url" status="parsed" title="最新小游戏,最新网页游戏,最新单机小游戏,2016最新热门小游戏大全" wc="1423">https://www.4399.com/flash/</url> ${gameId}.htm`;
+        vscode.window.showInformationMessage(`正在启动游戏: ${gameUrl}`);
+        // 实际游戏加载逻辑...
+    }
+}
