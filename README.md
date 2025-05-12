@@ -710,3 +710,100 @@ Debounced API Calls: Rate-limited requests to reduce server load.
 
 Pagination State: Tracks page index and result visibility.
 
+
+<!-- by 赵文佳 -->
+(4) In-Depth Analysis of Search Feature Characteristics 
+
+I. Deep Integration with VSCode Capabilities
+
+1. Native Search Interaction Interface
+Code Example:  
+```typescript  
+// Implements search engine-like interaction using VSCode QuickPick  
+searchQp = createQuickPick({  
+  title: "4399 on VSCode: Search",  
+  prompt: "Enter keywords"  
+});  
+```  
+Key Features:
+1. Seamless VSCode UI Integration: Matches VSCode’s native theme and interaction patterns.  
+2. Keyboard Navigation Support: Use `↑/↓` arrow keys for item selection and `Enter` for confirmation.  
+3. Built-in Loading State: Visual feedback via the `busy` property during API calls.  
+
+2. Webview Game Container  
+Code Example:  
+```typescript  
+// Embeds games within VSCode's Webview  
+const panel = vscode.window.createWebviewPanel(  
+  "4399-game",  
+  "4399 Mini Games",  
+  vscode.ViewColumn.One,  
+  { enableScripts: true }  
+);  
+panel.webview.html = `<iframe src="${url}"></iframe>`;  
+```  
+Key Features:  
+1. In-Editor Gameplay: Launch games without leaving the IDE.  
+2. Flash/HTML5 Compatibility: Renders games based on browser support.  
+3. Multi-Tab Support: Open multiple games simultaneously in separate Webview panels.  
+
+---
+
+II. Intelligent Search Capabilities 
+
+1. Multi-Level Autocomplete Suggestions
+Code Example:  
+```typescript  
+// Dynamically fetch suggestions during input  
+suggestions = JSON.parse(decodedData.split(" =")[1].replaceAll("'", '"'));  
+```  
+Key Features:  
+1. Real-time Feedback: Debounced API calls (1-second delay) to minimize redundant requests.  
+2. Precision Metadata: Suggestions include accurate game IDs for direct navigation.  
+3. Keyboard-Driven Selection: Navigate suggestions using arrow keys and `Enter`.  
+
+2. Paginated Search System
+Code Example:  
+```typescript  
+// Pagination handling for search results  
+searchQpItems.push({  
+  label: "Next Page",  
+  action() {  
+    searchPage++;  
+    searchByKwd(searchQp.value);  
+  }  
+});  
+```  
+Key Features:  
+1. Infinite Scroll-Like Loading: Seamless pagination via the "Next Page" button.  
+2. Persistent Pagination State: Global `searchPage` variable tracks current page index.  
+3. Smart Deduplication: Results are reset and refreshed on new searches.  
+
+---
+
+III. Data Processing Core
+
+1. GB2312 Encoding Auto-Conversion
+Code Example:  
+```typescript  
+// Resolve non-UTF-8 encoding issues from 4399 APIs  
+res.data = iconv.decode(res.data as Buffer, "gb2312");  
+```  
+Key Features:  
+1. Character Encoding Compatibility**: Converts GB2312-encoded responses to UTF-8.  
+2. Full Chinese Character Support: Ensures accurate rendering of non-ASCII characters.  
+
+
+
+IV. Personalized User Experience
+
+Search History Persistence
+Code Example:  
+```typescript  
+// Cache the last successful search keyword  
+globalStorage(getContext()).set("kwd", searchQp.value);  
+```  
+Key Features:  
+1. Global Storage via Memento API: Uses VSCode’s `globalStorage` for cross-session persistence.  
+2. Session Recovery: Restores the last search keyword even after editor restart.  
+

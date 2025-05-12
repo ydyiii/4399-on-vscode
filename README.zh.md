@@ -640,3 +640,92 @@ vsce package'''
 网络异常：若搜索请求失败，插件会通过 VSCode 通知栏显示错误信息（如 无法获取搜索页: 超时）。
 
 
+<!-- by 赵文佳 -->
+（四）搜索功能特点详解：
+
+一、深度集成 VSCode 特性
+ 1. 原生搜索交互界面
+详细代码：
+```typescript
+// 使用 VSCode QuickPick 实现类搜索引擎的交互
+searchQp = createQuickPick({
+  title: "4399 on VSCode: 搜索",
+  prompt: "输入搜索词"
+});
+```
+特点：  
+1.完全融入 VSCode UI 风格
+2.支持键盘快速导航（↑↓方向键选择，Enter确认）
+3.内置加载状态指示（`busy` 属性）
+
+2. Webview 游戏容器
+详细代码：
+```typescript
+// 在 VSCode 内嵌浏览器中运行游戏
+const panel = vscode.window.createWebviewPanel(
+  "4399-game", 
+  "4399小游戏", 
+  vscode.ViewColumn.One, 
+  { enableScripts: true }
+);
+panel.webview.html = `<iframe src="${url}"></iframe>`;
+```
+特点：  
+1.无需离开编辑器即可玩游戏
+2.支持 Flash/HTML5 游戏（取决于浏览器兼容性）
+3.多标签页支持（可同时打开多个游戏）
+
+
+二、智能搜索功能
+1. 多级搜索建议
+详细代码：
+```typescript
+// 输入关键词时动态获取建议
+suggestions = JSON.parse(decodedData.split(" =")[1].replaceAll("'", '"'));
+```
+特点：  
+1.输入即时反馈（1秒防抖延迟）
+2.建议项包含精准游戏 ID
+3.支持键盘快速选择建议项
+
+2. 分页搜索系统
+详细代码：
+```typescript
+// 搜索结果分页处理
+searchQpItems.push({
+  label: "下一页",
+  action() { 
+    searchPage++;
+    searchByKwd(searchQp.value); 
+  }
+});
+```
+特点：  
+1.无限滚动式分页加载
+2.页码状态持久化（`searchPage` 全局变量）
+3.智能结果去重（每次搜索重置列表）
+
+
+三、数据处理核心
+1.GB2312 编码自动转换
+详细代码：
+```typescript
+// 处理中文编码兼容性问题
+res.data = iconv.decode(res.data as Buffer, "gb2312");
+```
+特点：  
+1.解决 4399 接口返回非 UTF-8 编码问题
+2.支持完整中文字符显示
+
+
+四、用户个性化体验
+1. 搜索历史记忆 
+详细代码：
+```typescript
+// 保存最后一次有效搜索词
+globalStorage(getContext()).set("kwd", searchQp.value);
+```
+特点：  
+1.使用 VSCode 全局存储（`Memento` API）
+2.重启编辑器后仍可恢复上次搜索
+
