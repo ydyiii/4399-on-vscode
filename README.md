@@ -573,3 +573,237 @@ if(category) {
     if(gameName) play(games[gameName]);
 }
 ```
+
+<!-- by 赵文佳 -->
+(1) Core Functional Modules of Search Game
+1. Game Search Entry (searchGames)
+Description:
+Initializes the search interaction interface (VSCode QuickPick), receives user-input keywords, and triggers search suggestions or direct search execution. Supports default keyword pre-fill, UI state management (e.g., pagination button display), and user action monitoring.
+Code Location:
+async function searchGames(s: string)
+
+2. Search Execution (searchByKwd)
+Description:
+Invokes the 4399 search API using keywords, parses the returned HTML page to extract game names, IDs, and other metadata, and generates actionable QuickPick list items (including a "Next Page" pagination feature).
+Code Location:
+async function searchByKwd(s: string)
+
+3. Autocomplete Suggestions (suggest)
+Description:
+Provides real-time search autocomplete suggestions via a debounce mechanism (1-second delay). Calls the 4399 suggestion API, parses JSON responses, and displays suggestions. User selection of a suggestion triggers direct navigation to the corresponding game.
+Code Location:
+async function suggest(kwd: string)
+
+4. API Endpoint Management (API_URLS)
+Description:
+Defines URL templates for 4399 search-related APIs:
+
+Search result pagination (result): Supports dynamic keywords and page numbers.
+
+Search suggestion (suggestion): Supports dynamic keywords.
+Code Location:
+const API_URLS constant.
+
+5. Pagination & UI State Management
+Description:
+Manages pagination state (searchPage), search input history (searchValue), and UI state flags (e.g., whether results are displayed).
+Key Code Locations:
+
+searchPage: number: Current page index.
+
+showingSearchResult: boolean: Flag for active results display.
+
+searchValue: string: Cached user input keywords.
+
+6. Error Handling & Logging
+Description:
+Captures exceptions from network requests and data parsing. Uses err() for error reporting and log() for debug logging to ensure search robustness.
+Code Locations:
+
+try...catch blocks wrapping network requests.
+
+err("Failed to fetch search page: ", e) and log("4399 search page fetched successfully") calls.
+
+<!-- by 赵文佳 -->
+(2) Search Module Collaboration Flowchart
+User Input → searchGames() → Triggers suggest() (Autocomplete) OR searchByKwd() (Direct Search)
+                │
+                ├─→ suggest() → Calls API_URLS.suggestion → Parses Suggestions → Populates QuickPick
+                │
+                └─→ searchByKwd() → Calls API_URLS.result → Parses HTML → Generates Result List
+                                      │
+                                      └─→ User Clicks "Next Page" → searchPage++ → Re-invokes searchByKwd()
+
+<!-- by 赵文佳 -->
+(3) Search Module Usage Tutorial
+1. Plugin Installation
+Method 1: Install via VSCode Extension Marketplace
+
+Open VSCode and click the Extensions icon in the left sidebar (or press Ctrl+Shift+X).
+
+Search for 4399 on VSCode, locate the extension, and click Install.
+
+After installation, click Reload to restart VSCode and activate the plugin.
+
+Method 2: Manual Installation
+
+Download the .vsix file from the GitHub repository:
+''''
+bash
+git clone https://github.com/dsy4567/4399-on-vscode.git  
+cd 4399-on-vscode  
+vsce package  
+''''
+In VSCode, open the Extensions panel, click the menu icon (⋮) in the top-right corner, select Install from VSIX, and choose the generated .vsix file.
+
+2. Launching the Search Feature
+Open the command palette by pressing Ctrl+Shift+P.
+
+Type the command 4399: Search Games and press Enter.
+
+A QuickPick input box titled 4399 on VSCode: Search will appear.
+
+3. Basic Operations
+（1） Keyword-Based Search
+Input Game Name: Type a game name (e.g., Gold Miner) in the input box.
+
+Direct Search: Press Enter to invoke the search API and display results.
+
+Real-time Suggestions: Autocomplete suggestions (e.g., Gold Miner 2P) appear during typing. Click a suggestion to directly navigate to the game.
+
+（2） Browsing Search Results
+Results are displayed as a list containing Game Name and Game ID (e.g., Game ID: 12345).
+
+Click a Game Name:
+
+The plugin invokes the play function to open the game in an embedded browser.
+
+The input box closes, and the last search keyword is cached in globalStorage.
+
+（3） Pagination
+A Next Page button appears at the list bottom.
+
+Clicking it loads more results. The current page index is shown in the button description (e.g., Page 1).
+
+After pagination, the input box title updates to Search Results for [Keyword] (Page N).
+
+（4）Return to Suggestions
+In the search results interface, click the Back Button (←) to switch back to the suggestion mode. This clears results and displays autocomplete suggestions.
+
+4. Advanced Features
+（1） Historical Search Persistence
+The last successful search keyword is automatically saved via globalStorage.
+
+Upon reopening the search interface, the input box auto-populates this keyword.
+
+（2）Error Handling
+Network Errors: If a search request fails, the plugin displays an error message in the VSCode notification panel (e.g., Failed to fetch search page: Timeout).
+
+Key Technical Terms:
+QuickPick: VSCode’s interactive dropdown input component.
+
+Embedded Browser: An in-editor webview for rendering game content.
+
+globalStorage: VSCode’s API for persistent key-value data storage.
+
+Debounced API Calls: Rate-limited requests to reduce server load.
+
+Pagination State: Tracks page index and result visibility.
+
+
+<!-- by 赵文佳 -->
+(4) In-Depth Analysis of Search Feature Characteristics 
+
+I. Deep Integration with VSCode Capabilities
+
+1. Native Search Interaction Interface
+Code Example:  
+```typescript  
+// Implements search engine-like interaction using VSCode QuickPick  
+searchQp = createQuickPick({  
+  title: "4399 on VSCode: Search",  
+  prompt: "Enter keywords"  
+});  
+```  
+Key Features:
+1. Seamless VSCode UI Integration: Matches VSCode’s native theme and interaction patterns.  
+2. Keyboard Navigation Support: Use `↑/↓` arrow keys for item selection and `Enter` for confirmation.  
+3. Built-in Loading State: Visual feedback via the `busy` property during API calls.  
+
+2. Webview Game Container  
+Code Example:  
+```typescript  
+// Embeds games within VSCode's Webview  
+const panel = vscode.window.createWebviewPanel(  
+  "4399-game",  
+  "4399 Mini Games",  
+  vscode.ViewColumn.One,  
+  { enableScripts: true }  
+);  
+panel.webview.html = `<iframe src="${url}"></iframe>`;  
+```  
+Key Features:  
+1. In-Editor Gameplay: Launch games without leaving the IDE.  
+2. Flash/HTML5 Compatibility: Renders games based on browser support.  
+3. Multi-Tab Support: Open multiple games simultaneously in separate Webview panels.  
+
+---
+
+II. Intelligent Search Capabilities 
+
+1. Multi-Level Autocomplete Suggestions
+Code Example:  
+```typescript  
+// Dynamically fetch suggestions during input  
+suggestions = JSON.parse(decodedData.split(" =")[1].replaceAll("'", '"'));  
+```  
+Key Features:  
+1. Real-time Feedback: Debounced API calls (1-second delay) to minimize redundant requests.  
+2. Precision Metadata: Suggestions include accurate game IDs for direct navigation.  
+3. Keyboard-Driven Selection: Navigate suggestions using arrow keys and `Enter`.  
+
+2. Paginated Search System
+Code Example:  
+```typescript  
+// Pagination handling for search results  
+searchQpItems.push({  
+  label: "Next Page",  
+  action() {  
+    searchPage++;  
+    searchByKwd(searchQp.value);  
+  }  
+});  
+```  
+Key Features:  
+1. Infinite Scroll-Like Loading: Seamless pagination via the "Next Page" button.  
+2. Persistent Pagination State: Global `searchPage` variable tracks current page index.  
+3. Smart Deduplication: Results are reset and refreshed on new searches.  
+
+---
+
+III. Data Processing Core
+
+1. GB2312 Encoding Auto-Conversion
+Code Example:  
+```typescript  
+// Resolve non-UTF-8 encoding issues from 4399 APIs  
+res.data = iconv.decode(res.data as Buffer, "gb2312");  
+```  
+Key Features:  
+1. Character Encoding Compatibility**: Converts GB2312-encoded responses to UTF-8.  
+2. Full Chinese Character Support: Ensures accurate rendering of non-ASCII characters.  
+
+
+
+IV. Personalized User Experience
+
+Search History Persistence
+Code Example:  
+```typescript  
+// Cache the last successful search keyword  
+globalStorage(getContext()).set("kwd", searchQp.value);  
+```  
+Key Features:  
+1. Global Storage via Memento API: Uses VSCode’s `globalStorage` for cross-session persistence.  
+2. Session Recovery: Restores the last search keyword even after editor restart.  
+
