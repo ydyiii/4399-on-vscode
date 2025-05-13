@@ -262,7 +262,7 @@ try {
 #### 1️⃣历史记录管理接口 
 `getHistoryList()`
 
-```http
+```bash
 /**
  * 获取完整历史记录列表
  * @returns Promise<GameHistory[]> 返回历史记录数组
@@ -272,7 +272,7 @@ function getHistoryList(): Promise<GameHistory[]>
 
 `addHistory(record)`
 
-```http
+```bash
 /**
  * 添加新的历史记录
  * @param record 历史记录对象
@@ -288,7 +288,7 @@ function addHistory(record: {
 }): Promise<boolean>
 ```
 `clearHistory()`
-```http
+```bash
 /**
  * 清空所有历史记录
  * @returns Promise<boolean> 是否清空成功
@@ -297,7 +297,7 @@ function clearHistory(): Promise<boolean>
 ```
 #### 2️⃣ 历史记录查询接口
 `getRecentHistory(limit)`
-```http
+```bash
 /**
  * 获取最近的历史记录
  * @param limit 获取条数 (默认10条)
@@ -306,7 +306,7 @@ function clearHistory(): Promise<boolean>
 function getRecentHistory(limit?: number): Promise<GameHistory[]>
 ```
 `searchHistory(keyword)`
-```http
+```bash
 /**
  * 搜索历史记录
  * @param keyword 搜索关键词
@@ -316,7 +316,7 @@ function searchHistory(keyword: string): Promise<GameHistory[]>
 ```
 #### 3️⃣ 历史记录配置接口
 `getHistoryConfig()`
-```http
+```bash
 /**
  * 获取历史记录配置
  * @returns Promise<HistoryConfig>
@@ -325,7 +325,7 @@ function getHistoryConfig(): Promise<HistoryConfig>
 ```
 `updateHistoryConfig(config)`
 
-```http
+```bash
 /**
  * 更新历史记录配置
  * @param config 配置对象
@@ -343,7 +343,7 @@ function updateHistoryConfig(config: {
 
 #### 📊数据类型定义
 GameHistory 类型
-```http
+```bash
   interface GameHistory {
   id: string;           // 记录ID
   name: string;         // 游戏名称
@@ -356,7 +356,7 @@ GameHistory 类型
 }
 ```
 HistoryConfig 类型
-```http
+```bash
   interface HistoryConfig {
   maxRecords: number;   // 最大记录数(默认100)
   autoCleanDays: number; // 自动清理天数(0表示不自动清理)
@@ -365,7 +365,7 @@ HistoryConfig 类型
 ```
 #### 💻使用示例
 🔹 基本使用
-```http
+```bash
 // 添加历史记录
 await addHistory({
   name: '黄金矿工',
@@ -380,7 +380,7 @@ const recentGames = await getRecentHistory(10);
 const results = await searchHistory('矿工');
 ```
 🔹 高级配置
-```http
+```bash
 // 更新配置
 await updateHistoryConfig({
   maxRecords: 200,
