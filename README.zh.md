@@ -1,4 +1,5 @@
 #by 蓝早
+
 项目名称：4399 on VSCode
 项目使用说明
 一. 功能概述
@@ -152,6 +153,7 @@ const api = vscode.extensions.getExtension('dsy4567.4399-on-vscode').exports;
 
 
 #by 蓝早
+
 一、功能名称与简介
 功能名称：手动输入游戏ID  
 简介：在VSCode扩展“4399 on VSCode”中，用户可通过手动输入4399小游戏的唯一ID，快速定位并启动目标游戏。此功能便于用户快速关联4399平台上的特定游戏，支持数据分析、代码调试等操作。  

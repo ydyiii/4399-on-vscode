@@ -1,6 +1,8 @@
 #by lanzao (蓝早)
 Project Name: 4399 on VSCode
+
 Project Usage Instructions
+
  I. Functional Overview
 4399 on VSCode is an extension that allows developers to access and play 4399 mini-games directly within VSCode. The main functions include:
 1. Manual game ID input for launch
@@ -151,7 +153,9 @@ Uninstallation Method
 
 
 #by lanzao （蓝早）
+
 I. Function Name and Introduction
+
 Function Name:Manual Game ID Input  
 Introduction: In the VSCode extension "4399 on VSCode," users can quickly locate and launch a target game by manually entering the unique ID of a 4399 mini-game. This feature allows users to easily associate with specific games on the 4399 platform, supporting operations such as data analysis and code debugging.  
 
