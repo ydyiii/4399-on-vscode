@@ -1,132 +1,278 @@
+#by lanzao (蓝早)
+Project Name: 4399 on VSCode
+Project Usage Instructions
+ I. Functional Overview
+4399 on VSCode is an extension that allows developers to access and play 4399 mini-games directly within VSCode. The main functions include:
+1. Manual game ID input for launch
+2. Game category browsing
+3. Random game recommendation
+4. Game search functionality
+5. History record management
+6. Game detail viewing
+
+ II. Installation Guide
+1. Prerequisites
+   - The latest version of Visual Studio Code (1.70.0+) is installed.
+   - Network connection is normal (access to 4399 domain is required).
+2. Installation Method
+   - Installation Tutorial
+     - Method 1: Install within VSCode (Recommended)
+       - Press `Ctrl+Shift+X` to open the extension panel.
+       - Search for "4399 on VSCode".
+       - Click the install button.
+     - Method 2: Manual Installation
+       - If you have downloaded the `.vsix` file:
+         ```
+         code --install-extension 4399-on-vscode-1.0.0.vsix
+         ```
+
+ III. Quick Start
+1. Launch with Game ID Directly (Most Commonly Used!)
+   - For example, to play Gold Miner (ID: 185252):
+     1. Press `Ctrl+Shift+P` to open the command panel.
+     2. Input "4399 get".
+     3. Enter `185252`.
+   - Tip: You can also directly paste the game link, such as [https://www.4399.com/flash/185252.htm](https://www.4399.com/flash/185252.htm).
+2. Random摸鱼Mode:
+   - `Ctrl+Shift+P` → Input "4399 random" → Enter.
+   - [Ctrl+Shift+P] Input "4399 category".
+   - Select a preferred category (Action/Strategy/Sports...).
+   - Use the up and down keys to select a game and press Enter to start.
+
+IV. Core Function Usage Instructions
+1. Manual Game ID Input
+   - Use Case: Quick start when the game ID is known.
+   - Steps:
+     - Open the command panel (`Ctrl+Shift+P`).
+     - Input the command:
+       - For Flash games: `4399: Enter Game ID`.
+       - For H5 games: `4399: Enter H5 Game ID`.
+     - In the input box, enter:
+       - A pure numeric ID (e.g., `222735`).
+       - Or a complete URL (e.g., [https://www.4399.com/flash/222735.htm](https://www.4399.com/flash/222735.htm)).
+     - Press Enter to confirm.
+   - Example:
+     ```javascript
+     // You can also call directly via API
+     vscode.commands.executeCommand('4399-on-vscode.get', '222735');
+     ```
+2. Game Category Browsing
+   - Steps:
+     - Input `4399: Category Browsing` in the command panel.
+     - Use the arrow keys to select a category (e.g., "Action", "Puzzle").
+     - Press Enter to start after selecting a specific game.
+3. Random Game
+   - Command:
+     ```
+     4399: Try Your Luck
+     ```
+4. Game Search
+   - Steps:
+     - Input `4399: Search Games` in the command panel.
+     - Enter keywords (e.g., "Gold Miner").
+     - Select a game from the search results.
+
+ V. Advanced Features
+1. History Record Management
+   - View History:
+     - Command: `4399: History`.
+     - Displays the last 10 games played.
+   - Clear History:
+     
+     // Through settings operation
+     vscode.workspace.getConfiguration('4399').update('history', []);
+     ```
+2. Custom Configuration
+   - Add in `settings.json`:
+     
+     {
+         "4399.defaultGameId": "222735",
+         "4399.enableH5": true,
+         "4399.historyLimit": 15,
+         "4399.previewQuality": "high"
+     }
+     ```
+
+VI. Common Issue Resolution
+1. Game Fails to Load
+   - Solutions:
+     - Check network connection.
+     - Confirm the game ID is correct.
+     - Try refreshing the page (`F5`).
+2. Invalid ID Input
+   - Error Prompt:
+     ```
+     Invalid game ID format. Please enter a number or a complete 4399 game URL.
+     ```
+3. Performance Optimization
+  
+   // Lower preview quality to boost performance
+   "4399.previewQuality": "low"
+   ```
+
+ VII. Development Interface
+1. Extension API
+   
+   interface GameAPI {
+       launch(gameId: string): Promise<void>;
+       search(keyword: string): Promise<GameInfo[]>;
+       getCategories(): Promise<Category[]>;
+   }
+   // Get API instance
+   const api = vscode.extensions.getExtension('dsy4567.4399-on-vscode').exports;
+
+VII. Notes on Using 4399 on VSCode
+1. Flash Game Compatibility: Relies on the Ruffle emulator, and some games may have compatibility issues. If the game orientation is incorrect, try widening the game interface.
+2. Unsupported Game Types: Does not support Unity3D games and new Flash games.
+3. Network Environment:Issues may arise if not logged in or using a foreign IP (e.g., GitHub Codespaces or proxy).
+4. Multi-Game Limitations: Cannot open another game before the current one has fully loaded (web games are exempt).
+5. Shortcut Key Failure: Most VSCode shortcut keys may fail when the game interface has focus.
+6. Mouse Locking Issues: Games cannot lock the mouse (e.g., shooting games).
+7. Sound Issues: Users with VSCode versions below 1.71.0 may need to replace `ffmpeg` to enable sound.
+
+ Common Issues and Solutions:
+1. Game Fails to Load: Check your network connection, ensure the game ID is correct, and try refreshing the page (`F5`).
+2. Invalid ID Input: Ensure you enter a numeric ID or a complete URL.
+3. Performance Optimization: Reduce preview quality to enhance performance. Example configuration:
+   ```json
+   "4399.previewQuality": "low"
+   ```
+4. Extension Installation Failure: Ensure a stable network connection and check if your VSCode version is compatible.
+5. Plugin Conflicts:Disable other extensions that may conflict.
+6. Shortcut Key Failure: Shift focus back to the editor.
+7. Sound Issues: Check your VSCode version; if below 1.71.0, try replacing `ffmpeg`.
+
+Uninstallation Method
+1. Enter the extension view (`Ctrl+Shift+X`).
+2. Locate "4399 on VSCode".
+3. Click the uninstall icon.
+4. Restart VSCode.
+
+
+
 #by lanzao （蓝早）
-
 I. Function Name and Introduction
-Function Name: Manual Game ID Input
-Introduction: In the VSCode extension "4399 on VSCode," the Manual Game ID Input function allows users to directly locate and launch a target game by entering the unique ID of a 4399 mini-game. This function enables users to quickly associate with a specific game on the 4399 platform through manual input, thereby facilitating further operations on the game, such as data analysis and code debugging.
-The function addresses the following issues:
-1. Precise Access: No need to search through pages within the platform; simply enter the ID to reach the designated game.
-2. Efficiency Improvement: Suitable for teaching/testing scenarios where the game ID is known, saving browsing time.
-3. Development Assistance: Convenient for developers to quickly debug or analyze specific game resources.
-II. Features of the Manual Game ID Input Function
-1. Precise Direct Access
-Directly locate the target game via the unique game ID, avoiding cumbersome searches within the platform and enhancing access efficiency.
-2. Quick Operation
-Integrated with the VSCode command panel (Ctrl+Shift+P), the function can be triggered by simply entering the command without switching interfaces.
-3. Developer-Friendly
-Supports rapid debugging and testing, enabling developers to directly access game resources through the ID to optimize workflows.
-4. Flexible Compatibility
-Compatible with the 4399 platform API, it is highly extensible and can be integrated with more games or customized functions in the future.
-5. User Convenience
-Simplifies operational steps, making it suitable for teaching, demonstration, and other scenarios to enhance 6. user experience.
-(The function relies on the extension's API interface and network environment.)
-The Manual Game ID Input function in 4399 on VSCode, with its efficient and precise locating capabilities, high operational flexibility, real-time validation feedback, strong usability, adaptability, and reliability, provides users with a convenient and efficient game development and debugging experience. It is an essential feature of the 4399 on VSCode tool.
-III. Installation and Usage Guide for the Manual Game ID Input Function
-1. Extension Installation
-Ensure that the 4399 on VSCode extension is installed:
-Bash
-Install through the VSCode Extension Marketplace
-code --install-extension dsy4567.4399-on-vscode
-Alternatively, search for 4399 on VSCode in the VSCode Extension panel and install it.
-2. Function Activation
-After the extension is installed, the command is automatically registered in the activate function of VSCode, and no additional configuration is required.
-You can view the registered commands with the following code:
+Function Name:Manual Game ID Input  
+Introduction: In the VSCode extension "4399 on VSCode," users can quickly locate and launch a target game by manually entering the unique ID of a 4399 mini-game. This feature allows users to easily associate with specific games on the 4399 platform, supporting operations such as data analysis and code debugging.  
 
-// View registered commands (for debugging purposes)
-vscode.commands.getCommands().then(commands => {
-    console.log(commands.filter(cmd => cmd.startsWith('4399-on-vscode')));
-});
+Problems Solved: 
+1. Precise Access:Directly access the specified game by entering the ID, eliminating the need to search through multiple pages.  
+2. Efficiency Improvement:Suitable for teaching/testing scenarios where the game ID is known, saving time.  
+3. Development Assistance: Facilitates quick debugging and analysis of specific game resources for developers.  
+
+II. Function Features
+1. Precise Direct Access:irectly locate the target game via its unique game ID, avoiding cumbersome searches and enhancing access efficiency.  
+2. Quick Operation: Integrated with the VSCode command panel (`Ctrl+Shift+P`), where entering the command triggers the function without the need to switch interfaces.  
+3. Developer-Friendly:Supports rapid debugging and testing, allowing developers to quickly access game resources through the ID to optimize workflows.  
+4. Flexible Compatibility: Compatible with the 4399 platform API, ensuring strong scalability and the potential for future integration with more games or custom functions.  
+5. User Convenience:Simplifies operation steps, making it suitable for teaching, demonstration, and other scenarios to improve user experience.  
+Dependencies: The extension's API interface and network environment.
+
+III. Installation and Usage Guide
+1. Install the Extension
+   Ensure you have the latest version of VSCode installed (1.70.0+).  
+   Install via the VSCode Extension Marketplace: Search for `4399 on VSCode`.  
+   Or install using the command line:  
+     ```bash
+     code --install-extension dsy4567.4399-on-vscode
+     ```
+
+2. Function Activation 
+   After installation, the command is automatically registered and requires no additional configuration.  
+   To view registered commands:  
+     ```typescript
+     vscode.commands.getCommands().then(commands => {
+         console.log(commands.filter(cmd => cmd.startsWith('4399-on-vscode')));
+     });
+     ```
+
 3. Usage Steps
-(1) Open the Command Palette
-Press the shortcut key Ctrl+Shift+P (Windows/Linux) or Cmd+Shift+P (Mac) and enter the command:
-For standard Flash games: type 4399-on-vscode.get
-For H5 web games: type 4399-on-vscode.get-h5-web-game
-(2) Enter the Game ID
-In the input box that appears, enter one of the following formats:
-// Example 1: Directly enter the numeric ID
-222735
+   Open the Command Palette**  
+     Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac) and enter the command:  
+     For standard Flash games: `4399-on-vscode.get`  
+     For H5 web games: `4399-on-vscode.get-h5-web-game`  
+   Enter the Game ID
+     In the input box that appears, enter one of the following formats:  
+     ```typescript
+     // Example 1: Directly enter the numeric ID
+     222735
+     // Example 2: Enter the complete URL
+     https://www.4399.com/flash/222735.htm 
+     ```  
+     The input box supports auto-completion of historical records (implemented via globalStorage).  
+   Run the Game 
+     After entering the ID and pressing Enter, the extension will call the core logic:  
+     ```typescript
+     // Internal processing logic
+     const parsedId = parseId(userInput); // Extract the numeric ID
+     const gameUrl = `https://www.4399.com/flash/  ${parsedId}.htm`;
+     play(gameUrl); // Load and run the game
+     ```
 
-// Example 2: Enter the complete URL
-<url id="d0grk9mg0jb51fad5de0" type="url" status="parsed" title="Life Restart Simulator_Life Restart Simulator html5 game_4399h5 game-4399 mini-game" wc="1007">https://www.4399.com/flash/222735.htm</url>
-The input box supports auto-completion of historical records (implemented through globalStorage).
-(3) Run the Game
-After entering and pressing Enter, the extension will call the core logic:
-// Internal processing logic (simplified version)
-const parsedId = parseId(userInput); // Extract the numeric ID
-const gameUrl = `<url id="d0grk9mg0jb51fad5dcg" type="url" status="parsed" title="Latest Mini-games, Latest Web Games, Latest Single-player Mini-games, 2016 Popular Mini-games" wc="1423">https://www.4399.com/flash/</url> ${parsedId}.htm`;
-play(gameUrl); // Load and run the game
+4. Complete Invocation Code Example**  
+   ```typescript
+   import  as vscode from 'vscode';
 
-4. Complete Invocation Code Example
-If you need to call it programmatically, you can refer to the following code:
-import * as vscode from 'vscode';
+   async function manuallyInputGameId() {
+       const gameId = await vscode.window.showInputBox({
+           title: '4399 Game ID Input',
+           prompt: 'Enter Game ID or Complete URL',
+           value: '222735' // Default value
+       });
+       
+       if (gameId) {
+           vscode.commands.executeCommand('4399-on-vscode.get', gameId);
+       }
+   }
+   manuallyInputGameId();
+   ```
 
-// Manually trigger game ID input
-async function manuallyInputGameId() {
-    const gameId = await vscode.window.showInputBox({
-        title: '4399 Game ID Input',
-        prompt: 'Enter Game ID or Complete URL',
-        value: '222735' // Default value
-    });
+IV. Function Example and Code Analysis
+1. unction Example Code
+   ```typescript
+   import as vscode from 'vscode';
 
-    if (gameId) {
-        vscode.commands.executeCommand('4399-on-vscode.get', gameId);
-    }
-}
-// Invocation example
-manuallyInputGameId();
+   function playGame(gameId: string) {
+       const gameUrl = `https://www.4399.com/flash/  ${gameId}.htm`;
+       vscode.window.showInformationMessage(`Launching game: ${gameUrl}`);
+       // Actual game loading logic...
+   }
 
-IV. Examples and Code Analysis of the Manual Game ID Input Function
-1. Function Example Code
+   export function activate(context: vscode.ExtensionContext) {
+       let disposable = vscode.commands.registerCommand('game.inputId', async () => {
+           const gameId = await vscode.window.showInputBox({
+               placeHolder: 'Enter 4399 game ID (e.g., 222735)',
+               prompt: 'Supports direct input of numeric ID or complete game URL',
+               validateInput: text => {
+                   const idPattern = /^(\d+|https?:\/\/www\.4399\.com\/flash\/\d+\.htm)$/;
+                   return idPattern.test(text) ? null : "Enter a valid game ID or URL";
+               }
+           });
 
-import * as vscode from 'vscode';
+           if (gameId) {
+               const extractedId = gameId.match(/\d+/)?.[0];
+               if (extractedId) {
+                   playGame(extractedId);
+               } else {
+                   vscode.window.showErrorMessage('Invalid game ID format');
+               }
+           }
+       });
 
-// Game launch function
-function playGame(gameId: string) {
-    const gameUrl = `<url id="d0grk9mg0jb51fad5dcg" type="url" status="parsed" title="Latest Mini-games, Latest Web Games, Latest Single-player Mini-games, 2016 Popular Mini-games" wc="1423">https://www.4399.com/flash/</url> ${gameId}.htm`;
-    vscode.window.showInformationMessage(`Launching game: ${gameUrl}`);
-    // Actual game loading logic...
-}
+       context.subscriptions.push(disposable);
+   }
+   ```
 
-// Manual game ID input function
-export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand('game.inputId', async () => {
-        // Pop up input box
-        const gameId = await vscode.window.showInputBox({
-            placeHolder: 'Enter 4399 Game ID (e.g., 222735)',
-            prompt: 'Supports direct input of numeric ID or complete game URL',
-            validateInput: text => {
-                // Validate if the input is valid
-                const idPattern = /^(\d+|https?:\/\/www\.4399\.com\/flash\/\d+\.htm)$/;
-                return idPattern.test(text) ? null : "Enter a valid game ID or URL";
-            }
-        });
+2. Code Analysis  
+   Function Entry Point: Registered as a VSCode command via `vscode.commands.registerCommand`, callable from the VSCode command palette.  
+   Retrieve Historical Input:Fetches the last entered game ID from global storage to provide a default value.  
+   op Up Input Box:Calls `vscode.window.showInputBox` for users to enter the game ID or complete URL.  
+   Process User Input:Validates the input format, extracts the numeric ID, constructs the game link, and launches the game.
 
-        if (gameId) {
-            // Extract the pure numeric ID (handle URL or numeric input)
-            const extractedId = gameId.match(/\d+/)?.[0];
-            if (extractedId) {
-                playGame(extractedId);
-            } else {
-                vscode.window.showErrorMessage('Invalid game ID format');
-            }
-        }
-    });
-
-    context.subscriptions.push(disposable);
-}
-
-2. Code Analysis
-Function Entry Point
-Function Name: get
-Description: This function handles the user's manual input of the game ID, specifically for game links starting with http(s)://www.4399.com/flash/.
-Implementation: It is a property of the commands object and is registered as a VSCode command using vscode.commands.registerCommand. Users can invoke this function through the VSCode command panel.
-Retrieve Historical Input Value
-Function: globalStorage(ctx).get("id1")
-Description: Retrieves the value associated with the key id1 from the global storage, which stores the game ID the user last entered.
-Purpose: If the user has previously used this function and entered a game ID, this value will be retrieved to provide a default value in the input box, facilitating quick user operations.
-Pop Up Input Box
-Function: vscode.window.showInputBox
-Description: Displays an input box to allow users to manually enter the game ID.
-Configuration:
-value: The initial value of the input box. If a historical input value i is retrieved from global storage, it is used as the initial value; otherwise, the default value is "222735".
-title: The title of the input box, displayed as "4399 on VSCode: Enter Game ID", clearly indicating the current operation to the user.
-prompt: The prompt message in the input box, informing the user that they can enter the game link or the numeric ID (game ID) following http(s)://www.4399.com/flash/, providing clear input guidance
+ V. Extended Functions
+1. Quickly Locate Specific Games:Enter the game ID to quickly locate specific games, saving time.  
+2. ombine with History Function:Games entered are automatically added to the history for quick access later.  
+3. Custom HTML Code Snippets:Inject custom HTML code into specific games to enhance the gaming experience.  
+4. Support Multiple Game Types: Supports H5 web games, H5 mini-games, and some Flash mini-games (via Ruffle emulator).  
+5. Assist Account Login and Management: Combine with account login functions to quickly switch accounts and continue game progress.  
+6. Facilitate Game Development and Testing:Helps developers quickly locate games they are developing or testing, facilitating debugging and performance analysis.
